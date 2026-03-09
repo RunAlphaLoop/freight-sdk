@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "alphaloops"
+version = "0.1.0"
+description = "AlphaLoops Freight SDK — Python client for the FMCSA carrier data API"
+readme = "../README.md"
+requires-python = ">=3.9"
+license = "MIT"
+authors = [{ name = "AlphaLoops, Inc." }]
+dependencies = ["requests>=2.28"]
+
+[project.optional-dependencies]
+dev = ["ruff"]
