@@ -1,0 +1,38 @@
+{
+  "name": "alphaloops-freight-sdk",
+  "version": "0.1.0",
+  "description": "AlphaLoops Freight SDK — TypeScript client for the FMCSA carrier data API",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "tsc"
+  },
+  "keywords": [
+    "alphaloops",
+    "fmcsa",
+    "freight",
+    "carrier",
+    "trucking",
+    "sdk"
+  ],
+  "author": "AlphaLoops, Inc.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@types/node": "^25.4.0",
+    "typescript": "^5.4"
+  }
+}
