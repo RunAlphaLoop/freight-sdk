@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![PyPI](https://img.shields.io/pypi/v/alphaloops-freight-sdk.svg)](https://pypi.org/project/alphaloops-freight-sdk/)
+[![PyPI](https://img.shields.io/pypi/v/alphaloops-freight-sdk)](https://pypi.org/project/alphaloops-freight-sdk/)
 
 The official Python SDK for the [AlphaLoops FMCSA API](https://runalphaloops.com/fmcsa-api/docs) — access carrier profiles, fleet data, inspections, crash history, contacts, and more.
 
