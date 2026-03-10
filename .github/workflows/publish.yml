@@ -7,8 +7,9 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    environment: pypi
     permissions:
-      id-token: write  # trusted publishing
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -22,5 +23,3 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: python/dist/
-          # PyPI package: alphaloops-freight-sdk
-          # Import name remains: import alphaloops
