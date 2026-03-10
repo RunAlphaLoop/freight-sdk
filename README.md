@@ -20,18 +20,18 @@ from alphaloops.freight import AlphaLoops
 al = AlphaLoops(api_key="ak_...")
 
 # Look up a carrier by DOT number
-carrier = al.carriers.get("2247505")
-print(carrier.legal_name, carrier.total_trucks)
+carrier = al.carriers.get("80806")
+print(carrier.legal_name, carrier.power_units)
 
 # Search for carriers by name
-results = al.carriers.search("Swift Transportation")
+results = al.carriers.search("JB Hunt")
 for r in results.results:
     print(r.legal_name, r.dot_number, r.confidence)
 
 # Fleet data
-trucks = al.fleet.trucks("2247505")
-for truck in trucks.results:
-    print(truck.vin, truck.make, truck.model_year)
+trucks = al.fleet.trucks("80806")
+for truck in trucks.trucks:
+    print(truck.vin, truck.vehicle_make)
 ```
 
 ## Authentication
@@ -62,35 +62,35 @@ Get your API key at [runalphaloops.com](https://runalphaloops.com/).
 
 ```python
 # Full carrier profile (200+ fields)
-carrier = al.carriers.get("2247505")
+carrier = al.carriers.get("80806")
 
 # Look up by MC number
 carrier = al.carriers.get_by_mc("624748")
 
 # Field projection — only fetch what you need
-carrier = al.carriers.get("2247505", fields=["legal_name", "total_trucks", "total_drivers"])
+carrier = al.carriers.get("80806", fields="legal_name,power_units,drivers")
 
 # Fuzzy search with confidence scoring
 results = al.carriers.search("JB Hunt", state="AR", limit=5)
 
 # Authority history
-history = al.carriers.authority("2247505")
+history = al.carriers.authority("80806")
 
 # News and press mentions
-news = al.carriers.news("2247505", start_date="2025-01-01")
+news = al.carriers.news("80806", start_date="2025-01-01")
 ```
 
 ### Fleet — `al.fleet`
 
 ```python
-trucks = al.fleet.trucks("2247505", limit=100)
-trailers = al.fleet.trailers("2247505", limit=100)
+trucks = al.fleet.trucks("80806", limit=100)
+trailers = al.fleet.trailers("80806", limit=100)
 ```
 
 ### Inspections — `al.inspections`
 
 ```python
-inspections = al.inspections.list("2247505")
+inspections = al.inspections.list("80806")
 
 # Violations for a specific inspection
 violations = al.inspections.violations("INS-12345")
@@ -99,14 +99,14 @@ violations = al.inspections.violations("INS-12345")
 ### Crashes — `al.crashes`
 
 ```python
-crashes = al.crashes.list("2247505", severity="FATAL", start_date="2024-01-01")
+crashes = al.crashes.list("80806", severity="FATAL", start_date="2024-01-01")
 ```
 
 ### Contacts — `al.contacts`
 
 ```python
 # Find people at a carrier
-contacts = al.contacts.search(dot_number="2247505", job_title_levels=["c_suite", "vp"])
+contacts = al.contacts.search(dot_number="80806", job_title_levels=["c_suite", "vp"])
 
 # Enrich a contact (1 credit per new lookup, cached results are free)
 enriched = al.contacts.enrich("contact_id_here")
@@ -125,10 +125,10 @@ page2 = al.carriers.search("Swift", page=2, limit=10)
 Auto-pagination iterators handle paging for you:
 
 ```python
-for truck in al.fleet.trucks_iter("2247505", limit=200):
+for truck in al.fleet.trucks_iter("80806", limit=200):
     print(truck.vin)
 
-for inspection in al.inspections.list_iter("2247505"):
+for inspection in al.inspections.list_iter("80806"):
     print(inspection.inspection_id)
 ```
 
@@ -137,14 +137,14 @@ for inspection in al.inspections.list_iter("2247505"):
 All SDK methods return an `APIObject` — a lightweight dict wrapper that gives you attribute-style access to API responses without enforcing a rigid schema. The data you get is exactly what the API returns.
 
 ```python
-carrier = al.carriers.get("2247505")
+carrier = al.carriers.get("80806")
 
 # Attribute access
-carrier.legal_name        # "SWIFT TRANSPORTATION CO OF ARIZONA LLC"
-carrier.total_trucks      # 18752
+carrier.legal_name        # "J B HUNT TRANSPORT INC"
+carrier.power_units       # 25280
 
 # Dict access
-carrier["dot_number"]     # "2247505"
+carrier["dot_number"]     # "80806"
 
 # Check for fields
 "safety_rating" in carrier  # True
