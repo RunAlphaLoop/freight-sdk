@@ -16,4 +16,4 @@ dependencies = ["requests>=2.28"]
 packages = ["alphaloops"]
 
 [project.optional-dependencies]
-dev = ["ruff"]
+dev = ["ruff", "pytest"]

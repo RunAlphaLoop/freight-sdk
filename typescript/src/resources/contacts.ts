@@ -51,7 +51,8 @@ export class ContactsResource {
             resp.body?.retry_after
           );
         }
-        const retryAfter = parseInt(resp.headers.get("Retry-After") ?? "5", 10) || 5;
+        const parsed = parseInt(resp.headers.get("Retry-After") ?? "", 10);
+        const retryAfter = isNaN(parsed) ? 5 : parsed;
         await sleep(retryAfter);
         continue;
       }

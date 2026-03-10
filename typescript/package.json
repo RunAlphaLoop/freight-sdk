@@ -16,7 +16,8 @@
   ],
   "scripts": {
     "build": "tsc",
-    "prepublishOnly": "tsc"
+    "prepublishOnly": "tsc",
+    "test": "vitest run"
   },
   "keywords": [
     "alphaloops",
@@ -33,6 +34,7 @@
   },
   "devDependencies": {
     "@types/node": "^25.4.0",
-    "typescript": "^5.4"
+    "typescript": "^5.4",
+    "vitest": "^4.0.18"
   }
 }
