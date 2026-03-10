@@ -38,7 +38,7 @@ for (const r of results.results) {
 // Fleet data — every registered truck and trailer
 const trucks = await al.fleet.trucks('80806');
 for (const truck of trucks.trucks) {
-  console.log(truck.vin, truck.vehicle_make);
+  console.log(truck.vin, truck.make);
 }
 
 // Inspections, crashes, authority, news

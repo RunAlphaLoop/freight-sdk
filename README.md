@@ -56,7 +56,7 @@ for r in results.results:
 # Fleet data
 trucks = al.fleet.trucks("80806")
 for truck in trucks.trucks:
-    print(truck.vin, truck.vehicle_make)
+    print(truck.vin, truck.make)
 
 # Inspections, crashes, authority, news — it's all there
 inspections = al.inspections.list("80806")
@@ -90,7 +90,7 @@ for (const r of results.results) {
 // Fleet data
 const trucks = await al.fleet.trucks('80806');
 for (const truck of trucks.trucks) {
-  console.log(truck.vin, truck.vehicle_make);
+  console.log(truck.vin, truck.make);
 }
 
 // Inspections, crashes, authority, news
