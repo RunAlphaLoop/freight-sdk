@@ -2,20 +2,20 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![PyPI](https://img.shields.io/pypi/v/alphaloops.svg)](https://pypi.org/project/alphaloops/)
+[![PyPI](https://img.shields.io/pypi/v/alphaloops-freight-sdk.svg)](https://pypi.org/project/alphaloops-freight-sdk/)
 
 The official Python SDK for the [AlphaLoops FMCSA API](https://runalphaloops.com/fmcsa-api/docs) — access carrier profiles, fleet data, inspections, crash history, contacts, and more.
 
 ## Installation
 
 ```bash
-pip install alphaloops
+pip install alphaloops-freight-sdk
 ```
 
 ## Quick Start
 
 ```python
-from alphaloops import AlphaLoops
+from alphaloops.freight import AlphaLoops
 
 al = AlphaLoops(api_key="ak_...")
 
@@ -157,7 +157,7 @@ json.dumps(carrier.to_dict())
 ## Error Handling
 
 ```python
-from alphaloops import (
+from alphaloops.freight import (
     AlphaLoops,
     AlphaLoopsAuthError,
     AlphaLoopsNotFoundError,
