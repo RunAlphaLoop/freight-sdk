@@ -15,8 +15,17 @@ from .exceptions import (
     AlphaLoopsRateLimitError,
 )
 
+
+def __getattr__(name):
+    if name == "AsyncAlphaLoops":
+        from .async_client import AsyncAlphaLoops
+        return AsyncAlphaLoops
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+
 __all__ = [
     "AlphaLoops",
+    "AsyncAlphaLoops",
     "APIObject",
     "AlphaLoopsError",
     "AlphaLoopsAuthError",
