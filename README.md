@@ -198,7 +198,8 @@ carrier.legal_name           # dot-access
 carrier["legal_name"]        # dict access
 "power_units" in carrier     # membership test
 list(carrier.keys())         # all fields
-json.dumps(dict(carrier))    # serialize
+carrier.to_dict()            # plain dict (recursively unwraps nested objects)
+carrier.to_json(indent=2)    # JSON string
 ```
 
 **TypeScript — plain objects:**

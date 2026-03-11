@@ -232,6 +232,25 @@ class TestAPIObjectLiveData:
         assert "legal_name" in carrier
         assert carrier["legal_name"] == carrier.legal_name
 
+    def test_to_dict(self, al):
+        carrier = al.carriers.get(DOT)
+        d = carrier.to_dict()
+        assert isinstance(d, dict)
+        assert not isinstance(d, APIObject)
+        assert d["legal_name"] == carrier.legal_name
+        # Nested objects should be plain dicts too
+        assert isinstance(d["physical_address"], dict)
+        assert not isinstance(d["physical_address"], APIObject)
+
+    def test_to_json(self, al):
+        carrier = al.carriers.get(DOT)
+        j = carrier.to_json()
+        assert isinstance(j, str)
+        import json
+        parsed = json.loads(j)
+        assert parsed["legal_name"] == carrier.legal_name
+        assert isinstance(parsed["physical_address"], dict)
+
 
 # ---------------------------------------------------------------------------
 # Error handling

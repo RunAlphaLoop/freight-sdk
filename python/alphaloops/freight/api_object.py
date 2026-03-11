@@ -38,6 +38,20 @@ class APIObject(dict):
             inner = f"{shown}, ... +{len(keys) - 4} more"
         return f"{cls}({inner})"
 
+    def to_dict(self):
+        """Convert to a plain dict (recursively unwraps nested APIObjects)."""
+        def _unwrap(v):
+            if isinstance(v, APIObject):
+                return {k: _unwrap(val) for k, val in v.items()}
+            if isinstance(v, list):
+                return [_unwrap(item) for item in v]
+            return v
+        return {k: _unwrap(v) for k, v in self.items()}
+
+    def to_json(self, **kwargs):
+        """Serialize to a JSON string. Accepts all json.dumps kwargs."""
+        return json.dumps(self.to_dict(), **kwargs)
+
     @classmethod
     def from_response(cls, data):
         """Recursively wrap dicts/lists from an API response."""
