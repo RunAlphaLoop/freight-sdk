@@ -43,6 +43,12 @@ export class HTTPClient {
     return wrapResponse(resp.body);
   }
 
+  async post(path: string, body?: any): Promise<any> {
+    const resp = await this.requestRawWithBody("POST", path, body);
+    this.raiseForStatus(resp.status, resp.body);
+    return wrapResponse(resp.body);
+  }
+
   async getRaw(
     path: string,
     params?: Record<string, any>
@@ -102,6 +108,67 @@ export class HTTPClient {
       }
 
       // 5xx — retryable
+      if (RETRYABLE.has(resp.status)) {
+        if (attempt < this.maxRetries) {
+          await sleep(this.retryBaseDelay * 2 ** attempt);
+          continue;
+        }
+        const body = await safeJson(resp);
+        this.raiseForStatus(resp.status, body);
+      }
+
+      const body = await safeJson(resp);
+      return { status: resp.status, headers: resp.headers, body };
+    }
+
+    throw new AlphaLoopsAPIError(
+      0,
+      "ConnectionError",
+      lastError ? String(lastError) : "Request failed after retries"
+    );
+  }
+
+  private async requestRawWithBody(
+    method: string,
+    path: string,
+    jsonBody?: any
+  ): Promise<{ status: number; headers: Headers; body: any }> {
+    const url = `${this.baseUrl}${path}`;
+    let lastError: Error | undefined;
+
+    for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
+      let resp: Response;
+      try {
+        resp = await fetch(url, {
+          method,
+          headers: { ...this.headers, "Content-Type": "application/json" },
+          body: jsonBody !== undefined ? JSON.stringify(jsonBody) : undefined,
+          signal: AbortSignal.timeout(this.timeout * 1000),
+        });
+      } catch (err) {
+        lastError = err as Error;
+        if (attempt < this.maxRetries) {
+          await sleep(this.retryBaseDelay * 2 ** attempt);
+          continue;
+        }
+        throw new AlphaLoopsAPIError(0, "ConnectionError", String(err));
+      }
+
+      if (resp.status === 401) {
+        const body = await safeJson(resp);
+        this.raiseForStatus(resp.status, body);
+      }
+
+      if (resp.status === 429) {
+        if (attempt < this.maxRetries) {
+          const retryAfter = parseRetryAfter(resp.headers);
+          await sleep(retryAfter);
+          continue;
+        }
+        const body = await safeJson(resp);
+        this.raiseForStatus(resp.status, body);
+      }
+
       if (RETRYABLE.has(resp.status)) {
         if (attempt < this.maxRetries) {
           await sleep(this.retryBaseDelay * 2 ** attempt);

@@ -58,6 +58,37 @@ class AsyncCarriersResource:
             if offset >= resp.get("total_records", 0):
                 return
 
+    async def filtered_query(self, include, exclude=None, sort_by=None, sort_order=None,
+                             page=1, limit=25, fields=None):
+        body = {"include": include, "page": page, "limit": limit}
+        if exclude is not None:
+            body["exclude"] = exclude
+        if sort_by is not None:
+            body["sort_by"] = sort_by
+        if sort_order is not None:
+            body["sort_order"] = sort_order
+        if fields is not None:
+            body["fields"] = fields
+        return await self._http.post("/v1/carriers/query", json=body)
+
+    async def filtered_query_iter(self, include, exclude=None, sort_by=None, sort_order=None,
+                                  limit=25, fields=None):
+        page = 1
+        while True:
+            resp = await self.filtered_query(
+                include=include, exclude=exclude, sort_by=sort_by,
+                sort_order=sort_order, page=page, limit=limit, fields=fields,
+            )
+            results = resp.get("results", [])
+            if not results:
+                return
+            for item in results:
+                yield item
+            pagination = resp.get("pagination", {})
+            if page >= pagination.get("total_pages", page):
+                return
+            page += 1
+
     async def news(self, dot_number, start_date=None, end_date=None, page=1, limit=25):
         params = {"page": page, "limit": limit}
         if start_date is not None:

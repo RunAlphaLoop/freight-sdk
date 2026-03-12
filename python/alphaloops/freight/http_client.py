@@ -35,6 +35,10 @@ class HTTPClient:
         """GET request → APIObject (or list of APIObject)."""
         return self._request("GET", path, params=params)
 
+    def post(self, path, json=None, params=None):
+        """POST request → APIObject (or list of APIObject)."""
+        return self._request("POST", path, json=json, params=params)
+
     def get_raw(self, path, params=None):
         """GET request → raw requests.Response (for status code inspection)."""
         return self._request_raw("GET", path, params=params)

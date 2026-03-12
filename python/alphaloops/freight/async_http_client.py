@@ -43,6 +43,13 @@ class AsyncHTTPClient:
         data = resp.json()
         return APIObject.from_response(data)
 
+    async def post(self, path, json=None, params=None):
+        """POST request → APIObject (or list of APIObject)."""
+        resp = await self._request_raw("POST", path, json=json, params=params)
+        self._raise_for_status(resp)
+        data = resp.json()
+        return APIObject.from_response(data)
+
     async def get_raw(self, path, params=None):
         """GET request → raw httpx.Response (for status code inspection)."""
         return await self._request_raw("GET", path, params=params)

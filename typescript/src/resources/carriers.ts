@@ -69,6 +69,49 @@ export class CarriersResource {
     }
   }
 
+  async filteredQuery(
+    include: Record<string, any>,
+    options: {
+      exclude?: Record<string, any>;
+      sortBy?: string;
+      sortOrder?: string;
+      page?: number;
+      limit?: number;
+      fields?: string;
+    } = {}
+  ): Promise<APIObject> {
+    const { exclude, sortBy, sortOrder, page = 1, limit = 25, fields } = options;
+    const body: Record<string, any> = { include, page, limit };
+    if (exclude !== undefined) body.exclude = exclude;
+    if (sortBy !== undefined) body.sort_by = sortBy;
+    if (sortOrder !== undefined) body.sort_order = sortOrder;
+    if (fields !== undefined) body.fields = fields;
+    return this.http.post("/v1/carriers/query", body);
+  }
+
+  async *filteredQueryIter(
+    include: Record<string, any>,
+    options: {
+      exclude?: Record<string, any>;
+      sortBy?: string;
+      sortOrder?: string;
+      limit?: number;
+      fields?: string;
+    } = {}
+  ): AsyncGenerator<APIObject> {
+    const { limit = 25, ...rest } = options;
+    let page = 1;
+    while (true) {
+      const resp = await this.filteredQuery(include, { ...rest, page, limit });
+      const results = resp.results ?? [];
+      if (!results.length) return;
+      yield* results;
+      const totalPages = resp.pagination?.total_pages ?? page;
+      if (page >= totalPages) return;
+      page++;
+    }
+  }
+
   async news(
     dotNumber: string,
     options: { startDate?: string; endDate?: string; page?: number; limit?: number } = {}

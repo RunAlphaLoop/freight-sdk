@@ -87,6 +87,54 @@ class CarriersResource:
             if offset >= resp.get("total_records", 0):
                 return
 
+    def filtered_query(self, include, exclude=None, sort_by=None, sort_order=None,
+                       page=1, limit=25, fields=None):
+        """Query carriers with include/exclude condition blocks and optional geo radius.
+
+        Args:
+            include: Dict of conditions carriers MUST meet. Supports text exact
+                (state, status, ...), text partial (city, domain, ...), name search,
+                array contains (cargo, services, ...), range (power_units, drivers, ...
+                with min/max), boolean (has_bipd_coverage, hazmat_threshold, ...),
+                authority (has_common_authority, ...), and location
+                ({latitude, longitude, radius_miles}).
+            exclude: Optional dict of conditions carriers must NOT meet (same filter
+                types as include, except location).
+            sort_by: Sort field (default "dot_number", or "distance" with location).
+            sort_order: "asc" or "desc".
+            page: Page number (default 1).
+            limit: Results per page (1–100, default 25).
+            fields: Optional comma-separated field projection.
+        """
+        body = {"include": include, "page": page, "limit": limit}
+        if exclude is not None:
+            body["exclude"] = exclude
+        if sort_by is not None:
+            body["sort_by"] = sort_by
+        if sort_order is not None:
+            body["sort_order"] = sort_order
+        if fields is not None:
+            body["fields"] = fields
+        return self._http.post("/v1/carriers/query", json=body)
+
+    def filtered_query_iter(self, include, exclude=None, sort_by=None, sort_order=None,
+                            limit=25, fields=None):
+        """Iterate all filtered_query results, auto-paginating."""
+        page = 1
+        while True:
+            resp = self.filtered_query(
+                include=include, exclude=exclude, sort_by=sort_by,
+                sort_order=sort_order, page=page, limit=limit, fields=fields,
+            )
+            results = resp.get("results", [])
+            if not results:
+                return
+            yield from results
+            pagination = resp.get("pagination", {})
+            if page >= pagination.get("total_pages", page):
+                return
+            page += 1
+
     def news(self, dot_number, start_date=None, end_date=None, page=1, limit=25):
         """Recent news articles and press mentions.
 
