@@ -133,6 +133,7 @@ Get your API key at [runalphaloops.com](https://runalphaloops.com/).
 | `get(dot_number, fields="legal_name,power_units")` | Field projection — only fetch what you need |
 | `get_by_mc(mc_number)` | Carrier profile by MC/MX docket number |
 | `search(company_name, state=, city=, domain=)` | Fuzzy search with confidence scoring |
+| `filtered_query(include, exclude=, sort_by=, ...)` | Query with include/exclude filters, geo radius, pagination |
 | `authority(dot_number)` | Authority history — grants, revocations, reinstatements |
 | `news(dot_number, start_date=, end_date=)` | News articles and press mentions |
 
@@ -162,6 +163,100 @@ Get your API key at [runalphaloops.com](https://runalphaloops.com/).
 |--------|-------------|
 | `search(dot_number=, company_name=, job_title_levels=)` | Find people at a carrier or company |
 | `enrich(contact_id)` | Verified emails, phones, work history (1 credit per new lookup) |
+
+## Filtered Query
+
+Build targeted carrier lists with include/exclude condition blocks and optional geo-radius search.
+
+**Python:**
+```python
+# Find large Texas carriers with active authority, excluding high-risk
+results = al.carriers.filtered_query(
+    include={
+        "state": "TX",
+        "has_common_authority": True,
+        "power_units": {"min": 5},
+    },
+    exclude={"overall_risk_level": "HIGH"},
+    sort_by="power_units",
+    sort_order="desc",
+    limit=25,
+)
+for carrier in results.results:
+    print(carrier.dot_number, carrier.legal_name, carrier.power_units)
+
+# Geo-radius search — carriers within 25 miles of Dallas
+results = al.carriers.filtered_query(
+    include={
+        "location": {"latitude": 32.7767, "longitude": -96.797, "radius_miles": 25},
+        "power_units": {"min": 10},
+    },
+    sort_by="distance",
+)
+for carrier in results.results:
+    print(carrier.legal_name, f"{carrier.distance_miles:.1f} mi")
+
+# Auto-paginate all results
+for carrier in al.carriers.filtered_query_iter(include={"state": "CA", "cargo": "General Freight"}):
+    print(carrier.legal_name)
+```
+
+**TypeScript:**
+```typescript
+const results = await al.carriers.filteredQuery(
+  { state: 'TX', has_common_authority: true, power_units: { min: 5 } },
+  { exclude: { overall_risk_level: 'HIGH' }, sortBy: 'power_units', sortOrder: 'desc' }
+);
+
+// Geo-radius
+const nearby = await al.carriers.filteredQuery(
+  { location: { latitude: 32.7767, longitude: -96.797, radius_miles: 25 } },
+  { sortBy: 'distance' }
+);
+
+// Auto-paginate
+for await (const carrier of al.carriers.filteredQueryIter({ state: 'CA' })) {
+  console.log(carrier.legal_name);
+}
+```
+
+### Filter types
+
+| Type | Fields | Values |
+|------|--------|--------|
+| **Text exact** | `state`, `operating_authority_status`, `safety_rating`, `status`, `overall_risk_level`, `fraud_confidence`, `mc_number` | String or array of strings |
+| **Text partial** | `city`, `carrier_operation`, `authority_based_carrier_type`, `business_type`, `bipd_primary_insurer`, `cargo_insurer`, `top_truckstop_brand`, `domain` | Case-insensitive partial match |
+| **Name search** | `name` | Fuzzy match on legal_name/dba_name |
+| **Array contains** | `carrier_type`, `cargo`, `cargo_type`, `services`, `telematics`, `tms`, `fuel_card` | String or array |
+| **Range** | `power_units`, `drivers`, `estimated_employees`, `annual_revenue`, `total_accidents`, `total_inspections`, `avg_truck_age_years`, `distinct_states_served`, `total_trailers`, `bipd_total_coverage`, `founded_year` | `{"min": N}` and/or `{"max": N}` |
+| **Boolean** | `has_bipd_coverage`, `has_cargo_coverage`, `has_bond_coverage`, `hazmat_threshold`, `property`, `passenger`, `household_goods` | `true` / `false` |
+| **Authority** | `has_common_authority`, `has_contract_authority`, `has_broker_authority` | `true` (checks for active authority) |
+| **Location** | `location` (include only) | `{"latitude": N, "longitude": N, "radius_miles": N}` (max 500 mi) |
+
+## Async Client (Python)
+
+For asyncio/aiohttp applications, use `AsyncAlphaLoops`:
+
+```bash
+pip install alphaloops-freight-sdk[async]
+```
+
+```python
+from alphaloops.freight import AsyncAlphaLoops
+
+async with AsyncAlphaLoops(api_key="ak_...") as al:
+    carrier = await al.carriers.get("80806")
+    print(carrier.legal_name)
+
+    results = await al.carriers.filtered_query(
+        include={"state": "TX", "power_units": {"min": 50}}
+    )
+
+    async for truck in al.fleet.trucks_iter("80806"):
+        print(truck.vin, truck.make)
+```
+
+Same API surface as the sync client — every method is just `await`-able. The `async with` context manager handles connection cleanup.
 
 ## Pagination
 

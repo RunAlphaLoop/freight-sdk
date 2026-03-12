@@ -105,7 +105,37 @@ const authority = await al.carriers.authority('80806');
 
 // News
 const news = await al.carriers.news('80806', { startDate: '2025-01-01' });
+
+// Filtered query — include/exclude condition blocks with geo radius
+const results = await al.carriers.filteredQuery(
+  { state: 'TX', has_common_authority: true, power_units: { min: 5 } },
+  { exclude: { overall_risk_level: 'HIGH' }, sortBy: 'power_units', sortOrder: 'desc' }
+);
+
+// Geo-radius search — carriers within 25 miles of Dallas
+const nearby = await al.carriers.filteredQuery(
+  { location: { latitude: 32.7767, longitude: -96.797, radius_miles: 25 } },
+  { sortBy: 'distance' }
+);
+
+// Auto-paginate filtered results
+for await (const c of al.carriers.filteredQueryIter({ state: 'CA' })) {
+  console.log(c.legal_name);
+}
 ```
+
+### Filtered Query — Filter Types
+
+| Type | Fields | Values |
+|------|--------|--------|
+| **Text exact** | `state`, `operating_authority_status`, `safety_rating`, `status`, `overall_risk_level`, `fraud_confidence`, `mc_number` | String or array of strings |
+| **Text partial** | `city`, `carrier_operation`, `authority_based_carrier_type`, `business_type`, `bipd_primary_insurer`, `cargo_insurer`, `top_truckstop_brand`, `domain` | Case-insensitive partial match |
+| **Name search** | `name` | Fuzzy match on legal_name/dba_name |
+| **Array contains** | `carrier_type`, `cargo`, `cargo_type`, `services`, `telematics`, `tms`, `fuel_card` | String or array |
+| **Range** | `power_units`, `drivers`, `estimated_employees`, `annual_revenue`, `total_accidents`, `total_inspections`, `avg_truck_age_years`, `distinct_states_served`, `total_trailers`, `bipd_total_coverage`, `founded_year` | `{ min: N }` and/or `{ max: N }` |
+| **Boolean** | `has_bipd_coverage`, `has_cargo_coverage`, `has_bond_coverage`, `hazmat_threshold`, `property`, `passenger`, `household_goods` | `true` / `false` |
+| **Authority** | `has_common_authority`, `has_contract_authority`, `has_broker_authority` | `true` (checks for active authority) |
+| **Location** | `location` (include only) | `{ latitude: N, longitude: N, radius_miles: N }` (max 500 mi) |
 
 ### Fleet — `al.fleet`
 
