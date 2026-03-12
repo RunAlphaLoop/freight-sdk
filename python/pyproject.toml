@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "alphaloops-freight-sdk"
-version = "0.1.1"
+version = "0.2.0"
 description = "AlphaLoops Freight SDK — Python client for the FMCSA carrier data API"
 readme = "../README.md"
 requires-python = ">=3.9"
