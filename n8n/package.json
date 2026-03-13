@@ -1,0 +1,45 @@
+{
+  "name": "n8n-nodes-alphaloops",
+  "version": "0.1.0",
+  "description": "n8n community node for AlphaLoops FMCSA carrier data API",
+  "license": "MIT",
+  "author": "AlphaLoops, Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RunAlphaLoop/freight-sdk.git",
+    "directory": "n8n"
+  },
+  "main": "dist/nodes/AlphaLoops/AlphaLoops.node.js",
+  "keywords": [
+    "n8n-community-node-package",
+    "alphaloops",
+    "fmcsa",
+    "freight",
+    "carrier",
+    "trucking"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/AlphaLoopsApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/AlphaLoops/AlphaLoops.node.js"
+    ]
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "sync-sdk": "bash scripts/sync-sdk.sh",
+    "build": "npm run sync-sdk && tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "n8n-workflow": ">=1.0.0"
+  },
+  "devDependencies": {
+    "n8n-workflow": "^1.72.0",
+    "typescript": "^5.4"
+  }
+}
