@@ -1,5 +1,5 @@
 {
-  "name": "n8n-nodes-alphaloops",
+  "name": "n8n-nodes-alphaloops-freight",
   "version": "0.1.0",
   "description": "n8n community node for AlphaLoops FMCSA carrier data API",
   "license": "MIT",
