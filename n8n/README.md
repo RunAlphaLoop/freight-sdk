@@ -14,7 +14,9 @@ Unfortunately, n8n does not allow installation of packages. However, you can cal
 
 ## Installation (Self Hosted n8n)
 
-Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation. (There are two approaches, one for Docker and one for non-Docker.)
+Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation. There are two approaches, one for Docker and one for non-Docker; but both boil down to 
+
+`npm install n8n-nodes-alphaloops-freight`
 
 Once you've restarted n8n with the `n8n-nodes-alphaloops-freight` package installed:
 
