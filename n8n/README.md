@@ -4,25 +4,36 @@ This is an [n8n](https://n8n.io/) community node for the [AlphaLoops FMCSA API](
 
 [n8n](https://n8n.io/) is a [fair-code licensed](https://docs.n8n.io/reference/license/) workflow automation platform.
 
-## Installation
-
-Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation.
-
-Search for **n8n-nodes-alphaloops-freight** in the n8n community nodes browser, or install manually:
-
-```
-npm install n8n-nodes-alphaloops-freight
-```
-
 ## Prerequisites
 
 You need an AlphaLoops API key. Sign up at [runalphaloops.com](https://runalphaloops.com) to get one.
 
+## Installation
+
+Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation.
+
+1. In n8n, go to **Settings > Community Nodes**
+2. Click **Install a community node**
+3. Enter `n8n-nodes-alphaloops-freight` and click **Install**
+4. **Restart n8n** after installation — community nodes are not hot-reloaded
+
+For self-hosted n8n, you can also install via CLI and then restart:
+
+```bash
+cd ~/.n8n
+npm install n8n-nodes-alphaloops-freight
+# then restart your n8n instance
+```
+
 ## Credentials
 
-1. In n8n, go to **Settings > Credentials > Add Credential**
-2. Search for **AlphaLoops API**
-3. Enter your API key (starts with `ak_...`)
+Credentials are set up the first time you use the node:
+
+1. Add an **AlphaLoops** node to any workflow
+2. Click the **Credential** dropdown in the node and select **Create New**
+3. Enter your API key (starts with `ak_...`) and click **Save**
+
+Your credential is now available to all AlphaLoops nodes across workflows.
 
 ## Resources and Operations
 

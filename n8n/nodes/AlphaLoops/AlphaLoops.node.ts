@@ -4,9 +4,9 @@ import type {
 	INodeType,
 	INodeTypeDescription,
 } from 'n8n-workflow';
-import { AlphaLoops } from './sdk/client';
+import { AlphaLoops as AlphaLoopsClient } from './sdk/client';
 
-export class AlphaLoopsNode implements INodeType {
+export class AlphaLoops implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'AlphaLoops',
 		name: 'alphaLoops',
@@ -528,7 +528,7 @@ export class AlphaLoopsNode implements INodeType {
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const credentials = await this.getCredentials('alphaLoopsApi');
-		const al = new AlphaLoops({ apiKey: credentials.apiKey as string });
+		const al = new AlphaLoopsClient({ apiKey: credentials.apiKey as string });
 
 		const items = this.getInputData();
 		const returnData: INodeExecutionData[] = [];
