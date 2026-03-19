@@ -6,34 +6,38 @@ This is an [n8n](https://n8n.io/) community node for the [AlphaLoops FMCSA API](
 
 ## Prerequisites
 
-You need an AlphaLoops API key. Sign up at [runalphaloops.com](https://runalphaloops.com) to get one.
+You need an AlphaLoops API key. Sign up at [runalphaloops.com](https://runalphaloops.com) to get one, regardless of which installation path you take.
 
-## Installation
+## Installation (n8n Hosted)
 
-Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation.
+Unfortunately, n8n does not allow installation of packages. However, you can call [AlphaLoops' MCP server](https://mcp-freight.runalphaloops.com/) or [REST API](https://runalphaloops.com/fmcsa-api) from n8n.
 
-1. In n8n, go to **Settings > Community Nodes**
-2. Click **Install a community node**
-3. Enter `n8n-nodes-alphaloops-freight` and click **Install**
-4. **Restart n8n** after installation — community nodes are not hot-reloaded
+## Installation (Self Hosted n8n)
 
-For self-hosted n8n, you can also install via CLI and then restart:
+Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation. (There are two approaches, one for Docker and one for non-Docker.)
 
-```bash
-cd ~/.n8n
-npm install n8n-nodes-alphaloops-freight
-# then restart your n8n instance
-```
+Once you've restarted n8n with the `n8n-nodes-alphaloops-freight` package installed:
 
-## Credentials
+1. Open your desired workflow and go to the `Credentials` tab:
 
-Credentials are set up the first time you use the node:
+<p>
+    <img src="./../readme_images/alphaloops-n8n-ss-1.png" width="50%"/>
+</p>
 
-1. Add an **AlphaLoops** node to any workflow
-2. Click the **Credential** dropdown in the node and select **Create New**
-3. Enter your API key (starts with `ak_...`) and click **Save**
+2. You'll see `AlphaLoops` as an option, click the triple dots to `open`:
 
-Your credential is now available to all AlphaLoops nodes across workflows.
+<p>
+    <img src="./../readme_images/alphaloops-n8n-ss-2.png" width="50%"/>
+</p>
+
+3. Enter your API key and save it.
+
+4. At this point, you can inset AlphaLoops calls into your n8n workflows:
+
+<p>
+    <img src="./../readme_images/alphaloops-n8n-ss-3.png" width="50%"/>
+</p>
+
 
 ## Resources and Operations
 
