@@ -32,7 +32,7 @@
   ],
   "scripts": {
     "sync-sdk": "bash scripts/sync-sdk.sh",
-    "build": "npm run sync-sdk && tsc",
+    "build": "npm run sync-sdk && tsc && cp nodes/AlphaLoops/alphaloops.svg dist/nodes/AlphaLoops/",
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
