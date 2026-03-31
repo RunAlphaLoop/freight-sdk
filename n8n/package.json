@@ -1,9 +1,9 @@
 {
   "name": "n8n-nodes-alphaloops-freight",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "n8n community node for AlphaLoops FMCSA carrier data API",
   "license": "MIT",
-  "author": "AlphaLoops, Inc.",
+  "author": "AlphaLoops, Inc. <hello@runalphaloops.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/RunAlphaLoop/freight-sdk.git",
