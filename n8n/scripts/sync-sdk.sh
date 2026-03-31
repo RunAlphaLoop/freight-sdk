@@ -116,9 +116,10 @@ export class AlphaLoops {
 }
 CLIENTEOF
 
-# ── n8n compatibility: replace bare setTimeout (banned by n8n ESLint) ──
-find "$VENDOR_DST" -name '*.ts' | while read -r f; do
-    sed 's/setTimeout(/globalThis.setTimeout(/g' "$f" > "$f.tmp" && mv "$f.tmp" "$f"
+# ── n8n compatibility: replace sleep() with no-op (setTimeout is banned) ──
+for f in "$VENDOR_DST/http-client.ts" "$VENDOR_DST/resources/contacts.ts"; do
+    [ -f "$f" ] || continue
+    sed 's/return new Promise((resolve) => setTimeout(resolve, seconds \* 1000));/return Promise.resolve();/' "$f" > "$f.tmp" && mv "$f.tmp" "$f"
 done
 
 echo "✓ Vendored SDK synced to $VENDOR_DST"
