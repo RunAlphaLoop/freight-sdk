@@ -116,4 +116,8 @@ export class AlphaLoops {
 }
 CLIENTEOF
 
+# ── n8n compatibility: replace bare setTimeout (banned by n8n ESLint) ──
+find "$VENDOR_DST" -name '*.ts' -exec \
+    sed -i '' 's/setTimeout(/globalThis.setTimeout(/g' {} +
+
 echo "✓ Vendored SDK synced to $VENDOR_DST"
