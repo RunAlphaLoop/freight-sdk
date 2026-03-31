@@ -208,3 +208,6 @@ __marimo__/
 
 # Node
 node_modules/
+
+# Allow n8n dist (Creator Portal needs compiled files in repo)
+!n8n/dist/
