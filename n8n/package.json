@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-alphaloops-freight",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "n8n community node for AlphaLoops FMCSA carrier data API",
   "license": "MIT",
   "author": "AlphaLoops, Inc.",
@@ -33,12 +33,18 @@
   "scripts": {
     "sync-sdk": "bash scripts/sync-sdk.sh",
     "build": "npm run sync-sdk && tsc && cp nodes/AlphaLoops/alphaloops.svg dist/nodes/AlphaLoops/",
+    "dev": "npx n8n start --tunnel",
+    "lint": "eslint nodes/ credentials/",
+    "lint:fix": "eslint nodes/ credentials/ --fix",
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
     "n8n-workflow": ">=1.0.0"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.57.1",
+    "@typescript-eslint/parser": "^8.57.1",
+    "eslint": "^9.39.4",
     "n8n-workflow": "^1.72.0",
     "typescript": "^5.4"
   }
