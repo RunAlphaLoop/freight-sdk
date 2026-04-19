@@ -345,6 +345,10 @@ const al = new AlphaLoops({
 });
 ```
 
+## n8n Community Node
+
+Use AlphaLoops in your n8n workflows with our community node: [n8n-nodes-alphaloops-freight](https://github.com/RunAlphaLoop/n8n-nodes-alphaloops-freight)
+
 ## Learn More
 
 - **API Documentation** — [runalphaloops.com/fmcsa-api/docs](https://runalphaloops.com/fmcsa-api/docs)
