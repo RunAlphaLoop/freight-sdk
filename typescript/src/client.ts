@@ -7,7 +7,7 @@ import { CrashesResource } from "./resources/crashes.js";
 import { FleetResource } from "./resources/fleet.js";
 import { InspectionsResource } from "./resources/inspections.js";
 
-const VERSION = "0.1.0";
+const VERSION = "0.2.2";
 
 export interface AlphaLoopsOptions {
   apiKey?: string;
