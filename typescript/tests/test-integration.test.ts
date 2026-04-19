@@ -158,6 +158,40 @@ describe("carriers.news", () => {
   });
 });
 
+describe("carriers.timeline", () => {
+  it("returns timeline events with expected fields", async () => {
+    const result = await al.carriers.timeline(DOT);
+    expect(result.total).toBeGreaterThan(0);
+    expect(result.events.length).toBeGreaterThan(0);
+    const event = result.events[0];
+    expect(typeof event.detected_at).toBe("string");
+    expect(typeof event.category).toBe("string");
+  });
+});
+
+describe("carriers.insurance", () => {
+  it("returns insurance filings with expected fields", async () => {
+    const result = await al.carriers.insurance(DOT);
+    expect(result.total_policies).toBeGreaterThan(0);
+    expect(result.insurance.length).toBeGreaterThan(0);
+    const record = result.insurance[0];
+    expect(typeof record.insurance_type).toBe("object");
+    expect(typeof record.insurance_type.description).toBe("string");
+    expect(typeof record.insurance_company_name).toBe("string");
+    expect(typeof record.docket_number).toBe("string");
+  });
+});
+
+describe("carriers.insuranceByMc", () => {
+  it("returns insurance filings by MC number", async () => {
+    const result = await al.carriers.insuranceByMc("116505");
+    expect(result.total_policies).toBeGreaterThan(0);
+    expect(result.insurance.length).toBeGreaterThan(0);
+    expect(typeof result.insurance[0].insurance_type).toBe("object");
+    expect(typeof result.insurance[0].insurance_company_name).toBe("string");
+  });
+});
+
 describe("fleet.trucks", () => {
   it("returns truck fleet data with expected fields", async () => {
     const result = await al.fleet.trucks(DOT, { limit: 5 });

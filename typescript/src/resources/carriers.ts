@@ -112,6 +112,90 @@ export class CarriersResource {
     }
   }
 
+  async timeline(
+    dotNumber: string,
+    options: { startDate?: string; endDate?: string; category?: string; limit?: number; offset?: number } = {}
+  ): Promise<APIObject> {
+    const { startDate, endDate, category, limit = 50, offset = 0 } = options;
+    const params: Record<string, any> = { limit, offset };
+    if (startDate !== undefined) params.start_date = startDate;
+    if (endDate !== undefined) params.end_date = endDate;
+    if (category !== undefined) params.category = category;
+    return this.http.get(`/v1/carriers/${dotNumber}/timeline`, params);
+  }
+
+  async *timelineIter(
+    dotNumber: string,
+    options: { startDate?: string; endDate?: string; category?: string; limit?: number } = {}
+  ): AsyncGenerator<APIObject> {
+    const { limit = 50, ...rest } = options;
+    let offset = 0;
+    while (true) {
+      const resp = await this.timeline(dotNumber, { ...rest, limit, offset });
+      const events = resp.events ?? [];
+      if (!events.length) return;
+      yield* events;
+      offset += events.length;
+      if (offset >= (resp.total ?? 0)) return;
+    }
+  }
+
+  async insurance(
+    dotNumber: string,
+    options: { coverageType?: string; status?: string; page?: number; limit?: number } = {}
+  ): Promise<APIObject> {
+    const { coverageType, status, page = 1, limit = 50 } = options;
+    const params: Record<string, any> = { page, limit };
+    if (coverageType !== undefined) params.coverage_type = coverageType;
+    if (status !== undefined) params.status = status;
+    return this.http.get(`/v1/carriers/${dotNumber}/insurance`, params);
+  }
+
+  async *insuranceIter(
+    dotNumber: string,
+    options: { coverageType?: string; status?: string; limit?: number } = {}
+  ): AsyncGenerator<APIObject> {
+    const { limit = 50, ...rest } = options;
+    let page = 1;
+    while (true) {
+      const resp = await this.insurance(dotNumber, { ...rest, page, limit });
+      const records = resp.insurance ?? [];
+      if (!records.length) return;
+      yield* records;
+      const totalPages = resp.pagination?.total_pages ?? page;
+      if (page >= totalPages) return;
+      page++;
+    }
+  }
+
+  async insuranceByMc(
+    mcNumber: string,
+    options: { coverageType?: string; status?: string; page?: number; limit?: number } = {}
+  ): Promise<APIObject> {
+    const { coverageType, status, page = 1, limit = 50 } = options;
+    const params: Record<string, any> = { page, limit };
+    if (coverageType !== undefined) params.coverage_type = coverageType;
+    if (status !== undefined) params.status = status;
+    return this.http.get(`/v1/carriers/mc/${mcNumber}/insurance`, params);
+  }
+
+  async *insuranceByMcIter(
+    mcNumber: string,
+    options: { coverageType?: string; status?: string; limit?: number } = {}
+  ): AsyncGenerator<APIObject> {
+    const { limit = 50, ...rest } = options;
+    let page = 1;
+    while (true) {
+      const resp = await this.insuranceByMc(mcNumber, { ...rest, page, limit });
+      const records = resp.insurance ?? [];
+      if (!records.length) return;
+      yield* records;
+      const totalPages = resp.pagination?.total_pages ?? page;
+      if (page >= totalPages) return;
+      page++;
+    }
+  }
+
   async news(
     dotNumber: string,
     options: { startDate?: string; endDate?: string; page?: number; limit?: number } = {}

@@ -61,6 +61,36 @@ async def test_news(al):
 
 
 @pytest.mark.asyncio(loop_scope="session")
+async def test_timeline(al):
+    resp = await al.carriers.timeline(DOT)
+    assert isinstance(resp, APIObject)
+    assert resp.total > 0
+    events = resp.events
+    assert len(events) > 0
+    assert isinstance(events[0].detected_at, str)
+    assert isinstance(events[0].category, str)
+
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_insurance(al):
+    resp = await al.carriers.insurance(DOT)
+    assert isinstance(resp, APIObject)
+    assert resp.total_policies > 0
+    records = resp.insurance
+    assert len(records) > 0
+    assert isinstance(records[0].insurance_type, dict)
+    assert isinstance(records[0].insurance_company_name, str)
+
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_insurance_by_mc(al):
+    resp = await al.carriers.insurance_by_mc("116505")
+    assert isinstance(resp, APIObject)
+    assert resp.total_policies > 0
+    assert isinstance(resp.insurance[0].insurance_type, dict)
+
+
+@pytest.mark.asyncio(loop_scope="session")
 async def test_trucks(al):
     resp = await al.fleet.trucks(DOT, limit=5)
     assert isinstance(resp, APIObject)

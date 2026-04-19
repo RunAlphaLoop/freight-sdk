@@ -135,6 +135,106 @@ class CarriersResource:
                 return
             page += 1
 
+    def timeline(self, dot_number, start_date=None, end_date=None, category=None,
+                 limit=50, offset=0):
+        """Merged chronological feed of carrier change events and authority history.
+
+        Args:
+            dot_number: The carrier's USDOT number.
+            start_date: Filter from date (ISO 8601).
+            end_date: Filter to date (ISO 8601).
+            category: Event category filter (e.g. "contact", "authority", "fleet").
+            limit: Results per page (default 50).
+            offset: Number of results to skip (default 0).
+        """
+        params = {"limit": limit, "offset": offset}
+        if start_date is not None:
+            params["start_date"] = start_date
+        if end_date is not None:
+            params["end_date"] = end_date
+        if category is not None:
+            params["category"] = category
+        return self._http.get(f"/v1/carriers/{dot_number}/timeline", params=params)
+
+    def timeline_iter(self, dot_number, start_date=None, end_date=None, category=None,
+                      limit=50):
+        """Iterate all timeline events, auto-paginating."""
+        offset = 0
+        while True:
+            resp = self.timeline(dot_number, start_date=start_date, end_date=end_date,
+                                category=category, limit=limit, offset=offset)
+            events = resp.get("events", [])
+            if not events:
+                return
+            yield from events
+            offset += len(events)
+            if offset >= resp.get("total", 0):
+                return
+
+    def insurance(self, dot_number, coverage_type=None, status=None, page=1, limit=50):
+        """Insurance filings (BIPD, cargo, bond) for a carrier.
+
+        Args:
+            dot_number: The carrier's USDOT number.
+            coverage_type: Filter by type (e.g. "BIPD", "CARGO", "BOND").
+            status: Filter by status.
+            page: Page number (default 1).
+            limit: Results per page (default 50).
+        """
+        params = {"page": page, "limit": limit}
+        if coverage_type is not None:
+            params["coverage_type"] = coverage_type
+        if status is not None:
+            params["status"] = status
+        return self._http.get(f"/v1/carriers/{dot_number}/insurance", params=params)
+
+    def insurance_iter(self, dot_number, coverage_type=None, status=None, limit=50):
+        """Iterate all insurance filings, auto-paginating."""
+        page = 1
+        while True:
+            resp = self.insurance(dot_number, coverage_type=coverage_type, status=status,
+                                 page=page, limit=limit)
+            records = resp.get("insurance", [])
+            if not records:
+                return
+            yield from records
+            pagination = resp.get("pagination", {})
+            if page >= pagination.get("total_pages", page):
+                return
+            page += 1
+
+    def insurance_by_mc(self, mc_number, coverage_type=None, status=None, page=1, limit=50):
+        """Insurance filings by MC docket number.
+
+        Args:
+            mc_number: The carrier's MC or MX docket number.
+            coverage_type: Filter by type (e.g. "BIPD", "CARGO", "BOND").
+            status: Filter by status.
+            page: Page number (default 1).
+            limit: Results per page (default 50).
+        """
+        params = {"page": page, "limit": limit}
+        if coverage_type is not None:
+            params["coverage_type"] = coverage_type
+        if status is not None:
+            params["status"] = status
+        return self._http.get(f"/v1/carriers/mc/{mc_number}/insurance", params=params)
+
+    def insurance_by_mc_iter(self, mc_number, coverage_type=None, status=None, limit=50):
+        """Iterate all insurance filings by MC, auto-paginating."""
+        page = 1
+        while True:
+            resp = self.insurance_by_mc(mc_number, coverage_type=coverage_type, status=status,
+                                        page=page, limit=limit)
+            records = resp.get("insurance", [])
+            if not records:
+                return
+            yield from records
+            pagination = resp.get("pagination", {})
+            if page >= pagination.get("total_pages", page):
+                return
+            page += 1
+
     def news(self, dot_number, start_date=None, end_date=None, page=1, limit=25):
         """Recent news articles and press mentions.
 

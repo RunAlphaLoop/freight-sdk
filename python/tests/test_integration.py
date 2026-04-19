@@ -97,6 +97,58 @@ class TestCarriers:
         assert isinstance(article.sentiment, str)
         assert isinstance(article.url, str)
 
+    def test_timeline(self, al):
+        resp = al.carriers.timeline(DOT)
+        assert isinstance(resp, APIObject)
+        assert resp.total > 0
+        events = resp.events
+        assert len(events) > 0
+        event = events[0]
+        assert isinstance(event.detected_at, str)
+        assert isinstance(event.category, str)
+
+    def test_timeline_iter(self, al):
+        items = []
+        for event in al.carriers.timeline_iter(DOT, limit=5):
+            items.append(event)
+            if len(items) >= 3:
+                break
+        assert len(items) == 3
+        assert isinstance(items[0].detected_at, str)
+        assert isinstance(items[0].category, str)
+
+    def test_insurance(self, al):
+        resp = al.carriers.insurance(DOT)
+        assert isinstance(resp, APIObject)
+        assert resp.total_policies > 0
+        records = resp.insurance
+        assert len(records) > 0
+        record = records[0]
+        assert isinstance(record.insurance_type, dict)
+        assert isinstance(record.insurance_type.description, str)
+        assert isinstance(record.insurance_company_name, str)
+        assert isinstance(record.docket_number, str)
+
+    def test_insurance_iter(self, al):
+        items = []
+        for record in al.carriers.insurance_iter(DOT, limit=5):
+            items.append(record)
+            if len(items) >= 3:
+                break
+        assert len(items) >= 1
+        assert isinstance(items[0].insurance_type, dict)
+
+    def test_insurance_by_mc(self, al):
+        # J B Hunt MC number: 116505
+        resp = al.carriers.insurance_by_mc("116505")
+        assert isinstance(resp, APIObject)
+        assert resp.total_policies > 0
+        records = resp.insurance
+        assert len(records) > 0
+        record = records[0]
+        assert isinstance(record.insurance_type, dict)
+        assert isinstance(record.insurance_company_name, str)
+
 
 # ---------------------------------------------------------------------------
 # Fleet resource
