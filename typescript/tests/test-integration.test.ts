@@ -201,11 +201,12 @@ describe("fleet.trucks", () => {
     expect(typeof truck.vin).toBe("string");
     expect(typeof truck.make).toBe("string");
     expect(typeof truck.model).toBe("string");
-    expect(typeof truck.model_year).toBe("string");
+    expect(typeof truck.model_year).toBe("number");
     expect(typeof truck.cab_type).toBe("string");
-    expect(typeof truck.gross_weight).toBe("string");
-    expect(typeof truck.body_type).toBe("string");
-    expect(typeof truck.engine_type).toBe("string");
+    // These fleet-detail fields are nullable strings in the API response.
+    for (const field of ["gross_weight", "body_type", "engine_type"]) {
+      expect(truck[field] === null || typeof truck[field] === "string").toBe(true);
+    }
   });
 });
 
@@ -286,7 +287,7 @@ describe("async iterators", () => {
     expect(items.length).toBe(3);
     expect(typeof items[0].vin).toBe("string");
     expect(typeof items[0].make).toBe("string");
-    expect(typeof items[0].model_year).toBe("string");
+    expect(typeof items[0].model_year).toBe("number");
   });
 
   it("searchIter yields carrier search results with expected fields", async () => {
